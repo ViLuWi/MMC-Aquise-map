@@ -6,7 +6,11 @@
 
 <script setup>
 import { onMounted, ref, watchEffect } from "vue";
-import "../assets/marker-green.svg";
+import greenLink from "@/assets/marker-green.svg";
+import blueLink from "@/assets/marker-blue.svg";
+import orangeLink from "@/assets/marker-orange.svg";
+import purpleLink from "@/assets/marker-purple.svg";
+import mmcLink from "@/assets/mmc-marker.svg";
 import L from "leaflet";
 import clearLayers from "leaflet";
 const props = defineProps({
@@ -20,41 +24,41 @@ const mapRef = ref();
 
 onMounted(() => {
   const redIcon = L.icon({
-    iconUrl: "../src/assets/marker-red.svg",
+    iconUrl: "./assets/marker-red.svg",
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
   });
 
   const blueIcon = L.icon({
-    iconUrl: "../src/assets/marker-blue.svg",
+    iconUrl: blueLink,
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
   });
 
   const orangeIcon = L.icon({
-    iconUrl: "../src/assets/marker-orange.svg",
+    iconUrl: orangeLink,
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
   });
 
   const greenIcon = L.icon({
-    iconUrl: "../src/assets/marker-green.svg",
+    iconUrl: greenLink,
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
   });
 
   const purpleIcon = L.icon({
-    iconUrl: "../src/assets/marker-purple.svg",
+    iconUrl: purpleLink,
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
   });
   let MMCMarker = L.icon({
-    iconUrl: "../src/assets/mmc-marker.svg",
+    iconUrl: mmcLink,
     iconSize: [100, 60],
     iconAnchor: [50, 60],
     popupAnchor: [0, -45],
