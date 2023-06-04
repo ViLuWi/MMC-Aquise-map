@@ -2,7 +2,12 @@
   <div class="relative">
     <MapView :data="data" />
     <div class="absolute top-6 right-6 z-20 inline-flex items-center space-x-3">
-      <input type="file" @change="handleFileChange" class="bg-white p-1 rounded-lg" />
+      <input
+        type="file"
+        ref="fileInput"
+        @change="handleFileInputChange"
+        class="bg-white p-1 rounded-lg"
+      />
       <button
         data-modal-target="defaultModal"
         data-modal-toggle="defaultModal"
@@ -53,8 +58,8 @@
               <input
                 id="checkbox1"
                 type="checkbox"
-                checked
-                value=""
+                @change="handleFileInputChange"
+                v-model="checkbox1"
                 name="checkbox1"
                 class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 rounded focus:ring-blue-500"
               />
@@ -65,7 +70,8 @@
                 id="checkbox2"
                 type="checkbox"
                 checked
-                value=""
+                @change="handleFileInputChange"
+                v-model="checkbox2"
                 name="checkbox2"
                 class="w-5 h-5 text-green-600 bg-gray-100 border-gray-300 rounded focus:ring-green-500"
               />
@@ -76,7 +82,8 @@
                 id="checkbox3"
                 type="checkbox"
                 checked
-                value=""
+                @change="handleFileInputChange"
+                v-model="checkbox3"
                 name="checkbox3"
                 class="w-5 h-5 text-yellow-600 bg-gray-100 border-gray-300 rounded focus:ring-yellow-500"
               />
@@ -89,7 +96,8 @@
                 id="checkbox4"
                 type="checkbox"
                 checked
-                value=""
+                @change="handleFileInputChange"
+                v-model="checkbox4"
                 name="checkbox4"
                 class="w-5 h-5 text-purple-600 bg-gray-100 border-gray-300 rounded focus:ring-purple-500"
               />
@@ -120,15 +128,24 @@
 import "flowbite";
 import { initFlowbite } from "flowbite";
 import MapView from "./components/MapView.vue";
-import { ref } from "vue";
+import { ref, watchEffect } from "vue";
 import { read, utils } from "xlsx";
 import { saveAs } from "file-saver";
 
 const headers = ref([]);
 const data = ref([]);
+const checkbox1 = ref(true);
+const checkbox2 = ref(true);
+const checkbox3 = ref(true);
+const checkbox4 = ref(true);
+const fileInput = ref(null);
+const selectedFile = ref("fileInput");
 
 const handleFileChange = (event) => {
-  const file = event.target.files[0];
+  let file = fileInput.value.files[0];
+  if (selectedFile == null) {
+    selectedFile.value = file;
+  }
   const reader = new FileReader();
 
   reader.onload = (e) => {
@@ -137,9 +154,44 @@ const handleFileChange = (event) => {
     const excelData = utils.sheet_to_json(worksheet, { header: 1 });
 
     headers.value = excelData[0];
-    data.value = excelData.slice(1);
+    // data.value = excelData.slice(1);
+    data.value = [];
+    let xls_data = excelData.slice(1);
+    for (let i = 0; i < xls_data.length; i++) {
+      if (checkbox1.value && xls_data[i][3] === "Label") {
+        data.value.push(excelData[i]);
+      } else if (checkbox2.value && xls_data[i][3] === "Händler") {
+        data.value.push(excelData[i]);
+      } else if (checkbox3.value && xls_data[i][3] === "Interior") {
+        data.value.push(excelData[i]);
+      } else if (checkbox4.value && xls_data[i][3] === "Sonstiges") {
+        data.value.push(excelData[i]);
+      }
+    }
+    console.log(data.value.length);
   };
 
   reader.readAsBinaryString(file);
 };
+
+const handleFileInputChange = (event) => {
+  selectedFile.value = fileInput.value.files[0];
+  handleFileChange(event);
+};
+
+// watchEffect((event) => {
+//   if (!checkbox1.value) {
+//     handleFileInputChange(event);
+//   }
+// else if (checkbox2.checked && label === "Händler") {
+//   let rowData = [name, number1, number2, label];
+//   lat_long.push(rowData);
+// } else if (checkbox3.checked && label === "Interior") {
+//   let rowData = [name, number1, number2, label];
+//   lat_long.push(rowData);
+// } else if (checkbox4.checked && label === "Sonstiges") {
+//   let rowData = [name, number1, number2, label];
+//   lat_long.push(rowData);
+// }
+// });
 </script>
